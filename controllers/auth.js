@@ -55,9 +55,9 @@ const login = async (req, res = response) => {
 
     try {
 
-        const userDB = await User.findOne({email: email});
+        const user = await User.findOne({email: email});
 
-        if(!userDB) {
+        if(!user) {
 
             return res.status(400).json({
                 ok: false,
@@ -66,7 +66,7 @@ const login = async (req, res = response) => {
             
         }
 
-        const validPassword = await bcrypt.compareSync(password, userDB.password );
+        const validPassword = await bcrypt.compareSync(password, user.password );
 
         if(!validPassword){
             return res.status(400).json({
@@ -75,11 +75,11 @@ const login = async (req, res = response) => {
             });
         }
 
-        const token = await generateJWT(userDB.id); 
+        const token = await generateJWT(user.id); 
         
         res.json({
             ok: true,
-            userDB,
+            user,
             token
         })
         
@@ -98,9 +98,9 @@ const renewToken = async (req, res = response) => {
 
     try {
 
-        const userDB = await User.findOne({uid: uid});
+        const user = await User.findOne({uid: uid});
 
-        if(!userDB) {
+        if(!user) {
 
             return res.status(400).json({
                 ok: false,
@@ -109,11 +109,11 @@ const renewToken = async (req, res = response) => {
             
         }
 
-        const token = await generateJWT(userDB.id); 
+        const token = await generateJWT(user.id); 
         
         res.json({
             ok: true,
-            userDB,
+            user,
             token
         });
         
